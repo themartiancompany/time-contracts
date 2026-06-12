@@ -1,0 +1,97 @@
+{ "name": "evmfs-contracts",
+  "version":
+    "0.0.1",
+  "description":
+    "JavaScript programs and libraries to enable seamless development of native computer applications designed to interact with the Ethereum Virtual Machine File System (EVMFS).",
+  "funding": {
+    "type":
+      "patreon",
+    "url":
+      "https://patreon.com/tallero"
+  },
+  "files": [
+    "AUTHORS.rst",
+    "COPYING",
+    "README.md",
+    "Makefile",
+    "contracts",
+    "data-get",
+    "deployments",
+    "dist",
+    "package.json",
+    "webpack.config.cjs"
+  ],
+  "keywords": [
+    "ur",
+    "themartiancompany",
+    "dogeos",
+    "ethereum",
+    "ethereum-contracts",
+    "user-repository",
+    "smart-contract",
+    "evmfs",
+    "hip"
+  ],
+  "main":
+    "./data-get",
+  "homepage":
+    "https://github.com/themartiancompany/ur",
+  "bugs": {
+    "url":
+      "https://github.com/themartiancompany/ur-contracts/issues"
+  },
+  "repository": {
+    "type":
+      "git",
+    "url":
+      "git+https://github.com/themartiancompany/ur-contracts.git"
+  },
+  "license":
+    "AGPL-3.0-or-later",
+  "author": {
+    "name":
+      "Pellegrino Prevete",
+    "email":
+      "pellegrinoprevete@gmail.com",
+    "url":
+      "https://github.com/tallero"
+  },
+  "devDependencies": {
+    "crash-js-webpack":
+      "^0.0.9",
+    "flatted":
+      "^3.2.9",
+    "eslint":
+      "^10.0.3",
+    "globals":
+      "^17.3.0",
+    "@eslint/js":
+      "^10.0.1",
+    "safely-serve":
+      "^0.0.9",
+    "webpack":
+      "^5.102.1",
+    "webpack-cli":
+      "^6.0.1"
+  },
+  "dependencies": {
+    "crash-js":
+      "^0.1.111"
+  },
+  "type":
+    "commonjs",
+  "scripts": {
+    "build-contracts":
+      "make contracts-npm",
+    "build-lib":
+      "npx webpack --mode 'production' --config 'webpack.config.cjs' --stats-error-details && mv 'data-get.js' 'dist/ur-contracts/ur-contracts.js'",
+    "build":
+      "npm run build-contracts && npm run build-lib",
+    "publish-npm":
+      "npm run build && npm publish --access public",
+    "start":
+      "npx safely-serve 'dist/erc20-tools' --port 3000 --https --no-cache",
+    "test":
+      "echo \"Error: no test specified\" && exit 1"
+  }
+}
