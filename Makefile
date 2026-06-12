@@ -26,7 +26,7 @@
 
 SHELL=bash
 PREFIX ?= /usr/local
-_PROJECT=ur
+_PROJECT=evmfs
 _PROJECT_NPM=$(_PROJECT)-contracts
 _NAMESPACE=themartiancompany
 SOLIDITY_COMPILER_BACKEND ?= solc
