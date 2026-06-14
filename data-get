@@ -1,0 +1,199 @@
+#!/usr/bin/env node
+
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+/**    ----------------------------------------------------------------
+ *     data-get
+ *     ----------------------------------------------------------------
+ *     Copyright ©
+ *       Pellegrino Prevete
+ *         2025, 2026
+ * 
+ *     All rights reserved
+ *     ----------------------------------------------------------------
+ * 
+ *     This program is free software: you can redistribute it and/or
+ *     modify it under the terms of the GNU General Public License as
+ *     published by the Free Software Foundation, either version 3 of
+ *     the License, or (at your option) any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ * 
+ *     You should have received a copy of the
+ *     GNU General Public License
+ *     along with this program.
+ *     If not, see <https://www.gnu.org/licenses/>.
+ */
+
+const
+  _libcrash_module =
+    require(
+      "crash-js");
+/* global
+     _json_read */
+/* eslint-disable-next-line
+     no-global-assign */
+_file_read =
+  _libcrash_module._file_read;
+/* global
+     _json_read */
+/* eslint-disable-next-line
+     no-global-assign */
+_json_read =
+  _libcrash_module._json_read;
+/* global
+     _path_join */
+/* eslint-disable-next-line
+     no-global-assign */
+_path_join =
+  _libcrash_module._path_join;
+
+function
+  _data_get(
+    _contract_name,
+    _data_type,
+    _output_type,
+    _chain_id,
+    _contract_version) {
+  let
+    _data,
+    _path;
+  if (typeof(
+        _chain_id) == "undefined" ||
+     _chain_id == "" ) {
+    _chain_id =
+      "100";
+  }
+  if (typeof(
+        _contract_name) == "undefined" ||
+     _contract_name == "" ) {
+    _contract_name =
+      "FileSystem";
+  }
+  if (typeof(
+        _data_type) == "undefined" ||
+     _data_type == "" ) {
+    _data_type =
+      "abi";
+  }
+  if (typeof(
+        _output_type) == "undefined" ||
+     _output_type == "" ) {
+    if ( _data_type == "contract-address" ||
+         _data_type == "evm-version" ||
+         _data_type == "solc-version" ) {
+      _output_type =
+        "object";
+    }
+    else {
+      _output_type =
+        "path";
+    }
+  }
+  const
+    _deployments_dir =
+      `deployments/${_contract_name}/${_chain_id}`;
+  if ( _data_type == "contract-address" ) {
+    _path =
+      _path_join( [
+        __dirname,
+        `${deployments_dir}/config.json`
+    ]);
+  }
+  else if ( _data_type == "abi" ) {
+    _path =
+      _path_join( [
+        __dirname,
+        `${_contract_name}.abi.json`
+    ]);
+  }
+  else if ( _data_type == "source" ) {
+    _path =
+      _path_join( [
+        __dirname,
+        `${_contract_name}.sol`
+    ]);
+  }
+  else if ( _data_type == "bytecode" ) {
+    _path =
+      _path_join( [
+        __dirname,
+        `${_contract_name}.bin`
+    ]);
+  }
+  else if ( _data_type == "compiler-output" ) {
+    _path =
+      _path_join( [
+        __dirname,
+        `${_contract_name}.json`
+    ]);
+  }
+  else {
+    const
+      _msg =
+        `Unknown data type '${_data_type}'.`;
+    _msg_error(
+      _msg,
+      1);
+  }
+  if ( _output_type == "path" ) {
+    _data =
+      _path;
+  }
+  else if ( _output_type == "object" ) {
+    if ( _data_type == "abi" ) {
+      _data =
+        _json_read(
+          _path);
+    }
+    else if ( _data_type == "source" ) {
+      _data =
+        _file_read(
+          _path);
+    }
+    else if ( _data_type == "bytecode" ) {
+      _data =
+        _file_read(
+          _path);
+    }
+    else if ( _data_type == "compiler-output" ) {
+      _data =
+        _json_read(
+          _path);
+    }
+    else if ( _data_type == "contract-address" ) {
+      _data =
+        _json_read(
+          _path)[
+            "contract-address"];
+    }
+    else if ( _data_type == "evm-version" ) {
+      _data =
+        _json_read(
+          _path)[
+            "evm-version"];
+    }
+    else if ( _data_type == "solc-version" ) {
+      _data =
+        _json_read(
+          _path)[
+            "solc-version"];
+    }
+    else {
+      _msg =
+        `Uknown data type '${_data_type}'.`;
+      _msg_info(
+        _msg,
+        1);
+    }
+  }
+  return _data;
+}
+
+module.exports = {
+  _data_get:
+    _data_get,
+};
