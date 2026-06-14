@@ -1,6 +1,6 @@
 { "name": "evmfs-contracts",
   "version":
-    "0.0.2",
+    "0.0.3",
   "description":
     "JavaScript programs and libraries to enable seamless development of native computer applications designed to interact with the Ethereum Virtual Machine File System (EVMFS).",
   "funding": {
@@ -63,6 +63,8 @@
   "devDependencies": {
     "crash-js-webpack":
       "^0.0.9",
+    "evm-make":
+      "^0.0.2",
     "flatted":
       "^3.2.9",
     "eslint":
