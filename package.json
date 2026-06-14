@@ -1,8 +1,8 @@
-{ "name": "evmfs-contracts",
+{ "name": "time-contracts",
   "version":
     "0.0.3",
   "description":
-    "JavaScript programs and libraries to enable seamless development of native computer applications designed to interact with the Ethereum Virtual Machine File System (EVMFS).",
+    "JavaScript programs and libraries to enable seamless development of native computer applications designed to interact with the Ethereum Time Library (ETL).",
   "funding": {
     "type":
       "patreon",
@@ -22,7 +22,6 @@
     "webpack.config.cjs"
   ],
   "keywords": [
-    "evmfs",
     "ethereum-virtual-machine-file-system",
     "ethereum-file-system",
     "ethereum-fs",
@@ -31,6 +30,7 @@
     "ethereum-contracts",
     "ethereum",
     "dogeos",
+    "time",
     "ur",
     "user-repository",
     "hip",
@@ -39,16 +39,16 @@
   "main":
     "./data-get",
   "homepage":
-    "https://github.com/themartiancompany/evmfs",
+    "https://github.com/themartiancompany/libtime",
   "bugs": {
     "url":
-      "https://github.com/themartiancompany/evmfs-contracts/issues"
+      "https://github.com/themartiancompany/time-contracts/issues"
   },
   "repository": {
     "type":
       "git",
     "url":
-      "git+https://github.com/themartiancompany/evmfs-contracts.git"
+      "git+https://github.com/themartiancompany/time-contracts.git"
   },
   "license":
     "AGPL-3.0-or-later",
@@ -82,7 +82,7 @@
   },
   "dependencies": {
     "crash-js":
-      "^0.1.111"
+      "^0.1.113"
   },
   "type":
     "commonjs",
@@ -90,7 +90,7 @@
     "build-contracts":
       "make contracts-npm",
     "build-lib":
-      "npx webpack --mode 'production' --config 'webpack.config.cjs' --stats-error-details && mv 'data-get.js' 'dist/evmfs-contracts/evmfs-contracts.js'",
+      "npx webpack --mode 'production' --config 'webpack.config.cjs' --stats-error-details && mv 'data-get.js' 'dist/time-contracts/time-contracts.js'",
     "build":
       "npm run build-contracts && npm run build-lib",
     "publish-npm":
