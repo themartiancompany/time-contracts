@@ -29,7 +29,7 @@ import { defineConfig } from "eslint/config";
 
 const
   _project =
-    "evmfs-contracts";
+    "time-contracts";
 
 export default defineConfig([
  {

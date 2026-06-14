@@ -26,8 +26,8 @@
 
 SHELL=bash
 PREFIX ?= /usr/local
-_PROJECT=evmfs
-_PROJECT_NPM=$(_PROJECT)-contracts
+_PROJECT=libtime
+_PROJECT_NPM=time-contracts
 _NAMESPACE=themartiancompany
 SOLIDITY_COMPILER_BACKEND ?= solc
 DOC_DIR=$(DESTDIR)$(PREFIX)/share/doc/$(_PROJECT)
@@ -227,7 +227,8 @@ npm:
 	cp \
 	  -r \
 	  "contracts-build/"* \
-	  "build"
+	  "build" || \
+	true
 	cp \
 	  -r \
 	  "Makefile" \

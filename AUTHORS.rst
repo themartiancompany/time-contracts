@@ -22,7 +22,7 @@
 
 
 ==================================================================
-Ethereum Virtual Machine File System (EVMFS) Contracts Authors
+Ethereum Time Library (ETL) Contracts Authors
 ==================================================================
 
 * Pellegrino Prevete

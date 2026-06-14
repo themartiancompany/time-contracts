@@ -26,19 +26,19 @@
 [comment]: <> (If not, see <https://www.gnu.org/licenses/>.)
 
 
-# Ethereum Virtual Machine File System (EVMFS) Contracts
+# Ethereum Time Library (`libtime`) Contracts
 
 Solidity source code contracts for the
-Ethereum Virtual Machine File System (EVMFS).
+Ethereum Time Library (ETL).
 
 This repository can be imported as a submodule
-by applications which integrate with the
-[EVMFS](
-  https://github.com/themartiancompany/evmfs).
+by applications which integrate with
+[`libtime`](
+  https://github.com/themartiancompany/libtime).
 
 The repository contains, together with the contracts,
 a Javascript module which contains
-a loading function for EVMFS contracts data,
+a loading function for the Time Library contracts data,
 such as its source, its ABI and bytecode for the
 available deployments is provided.
 
@@ -53,12 +53,8 @@ using
 
 Version 1.0 is composed by the following contracts.
 
-- [FileSystem](
-    FileSystem.sol),
-- [LengthLock](
-    LengthLock.sol),
-- [CrossChainFileSystem](
-    CrossChainFileSystem.sol)
+- [TBW](
+    TBW.sol),
 
 ### Documentation
 
@@ -67,7 +63,7 @@ the `docs` directory in the main
 repository.
 
 The submodule name for the documentation
-is `evmfs-docs`.
+is `libtime-docs`.
 
 ## License
 
