@@ -74,11 +74,12 @@ contract BlocksData {
       require(
         msg.sender == _namespace,
         "Setting data for the"
-	"wrong namespace.");
+        "wrong namespace.");
     }
 
     /**
      * @dev Check height for a blockchain.
+     * @param _chain_id Chain ID.
      * @param _height Input height.
      */
     function checkHeight(
@@ -87,6 +88,78 @@ contract BlocksData {
       public
       view {
       if ( _chain_id == 0 ) {
+        require(
+          _height < block.number );
+      }
+      else {
+        true;
+      }
+    }
+
+    /**
+     * @dev Check height for a blockchain.
+     * @param _chain_id Chain ID.
+     * @param _height Input height.
+     */
+    function checkHeight(
+      uint256 _chain_id,
+      uint256 _height)
+      public
+      view {
+      if ( _chain_id == 0 ) {
+        require(
+          _height < block.number );
+      }
+      else {
+        true;
+      }
+    }
+
+    /**
+     * @dev Set current time from the blockchain
+            as an Unix timestamp.
+     * @param _chain_id Chain ID.
+     * @param _height Input height.
+     */
+    function setBlockInfo()
+      public
+      view {
+      address _namespace =
+        msg.sender;
+      uint256 _chain_id =
+        0;
+      uint256 _height =
+        block.number;
+      bytes _block =
+        block.blockhash();
+      uint256 _event =
+        events[
+          _namespace][
+            _chain_id][
+              _height];
+      epochs[
+        _namespace][
+          _chain_id][
+            _block][
+              _height][
+                _event] =
+        block.timestamp;
+    }
+
+    /**
+     * @dev Get current time from the blockchain
+            as an Unix timestamp.
+     * @param _chain_id Chain ID.
+     * @param _height Input height.
+     */
+    function setEpoch(
+      uint256 _chain_id,
+      uint256 _height)
+      public
+      view {
+      if ( _chain_id == 0 ) {
+        if ( _height < 0 ) {
+	}
         require(
           _height < block.number );
       }
@@ -125,6 +198,7 @@ contract BlocksData {
             _chain_id][
               _event];
       checkHeight(
+        _chain_id,
         _height);
       bytes32 _parent_current =
         parents[
@@ -138,8 +212,8 @@ contract BlocksData {
         ( _parent == 0 &&
           _height == 0 ),
         "Setting no parent for "
-	"non-genesis block or parent "
-	"for genesis block.");
+        "non-genesis block or parent "
+        "for genesis block.");
       parents[
         _namespace][
           _chain_id][
