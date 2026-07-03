@@ -22,19 +22,21 @@
     "webpack.config.cjs"
   ],
   "keywords": [
+    "ur",
+    "hip",
+    "time",
+    "clock",
+    "evmfs",
+    "fs",
+    "dogeos",
+    "themartiancompany",
+    "user-repository",
     "ethereum-virtual-machine-file-system",
     "ethereum-file-system",
     "ethereum-fs",
-    "fs",
     "smart-contract",
     "ethereum-contracts",
-    "ethereum",
-    "dogeos",
-    "time",
-    "ur",
-    "user-repository",
-    "hip",
-    "themartiancompany"
+    "ethereum"
   ],
   "main":
     "./data-get",
