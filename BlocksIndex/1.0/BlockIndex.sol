@@ -74,7 +74,7 @@ contract BlocksData {
         uint256 => mapping(                   // chain id
           bytes32 => mapping(                 // block
             uint256 => mapping(               // height
-              uint256 => uint256 ) ) ) )
+              uint256 => uint256 ) ) ) ) )
       public
         epochs;                               // event -> epoch
 
