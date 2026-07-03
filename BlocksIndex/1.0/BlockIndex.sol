@@ -37,11 +37,30 @@ contract BlocksData {
       immutable
         author =
           0xea02F564664A477286B93712829180be4764fAe2;
+    address
+      public
+      immutable
+        deployer =
+          msg.sender;
     string
       public
         version =
           "1.0";
 
+    mapping(
+      address => mapping(                     // Data namespace.
+        uint256 => mapping(                   // Chain ID.
+          uint256 => mapping(                 // Data entry (fork event).
+            uint256 => uint256 ) ) ) )        // List index.
+      public                                  // Blocktimes array
+        blocktimes;                           // chain id/event mapping.
+    mapping(
+      address => mapping(                     // Data namespace.
+        uint256 => mapping(                   // Chain ID.
+          uint256 => mapping(                 // Data entry (fork event).
+            uint256 ) ) ) )                   // List index.
+      public                                  // Blocktimes minimum height
+        blocktimesStart;                      // validity chain id/event mapping.
     mapping(
       address => mapping(                     // Data namespace.
         uint256 => mapping(                   // Chain ID.
@@ -52,31 +71,51 @@ contract BlocksData {
       address => mapping(                     // Data namespace.
         uint256 => mapping(                   // Chain ID.
           uint256 => uint256) ) )             // Data entry (fork event).
-      public                                  // 
-        heights;                              // event -> height
+      public                                  // Available block numbers
+        heights;                              // event mapping.
     mapping(
-      address => mapping(                     // namespace
-        uint256 => mapping(                   // chain id
-          uint256 => mapping(                 // height
-            uint256 => bytes32 ) ) ) )
-      public
-        blocks;                               // event -> block
+      address => mapping(                     // Data namespace.
+        uint256 => mapping(                   // Chain ID.
+          uint256 => mapping(                 // Height (block number).
+            uint256 => bytes32 ) ) ) )        // Data entry (fork event).
+      public                                  // Blocks hashes
+        blocks;                               // height/event mapping.
     mapping(
-      address => mapping(                     // namespace
-        uint256 => mapping(                   // chain id
-          bytes32 => mapping(                 // block
-            uint256 => mapping(               // height
-              uint256 => bytes32 ) ) ) ) )
-      public
-        parents;                              // event -> parent
+      address => mapping(                     // Data namespace.
+        uint256 => mapping(                   // Chain ID.
+          bytes32 => mapping(                 // Transaction hash.
+            uint256 => mapping(               // Height (block number).
+              uint256 => bytes32 ) ) ) ) )    // Data entry (fork event).
+      public                                  // Parent block hash
+        parents;                              // height/event mapping.
     mapping(
-      address => mapping(                     // namespace
-        uint256 => mapping(                   // chain id
-          bytes32 => mapping(                 // block
-            uint256 => mapping(               // height
-              uint256 => uint256 ) ) ) ) )
-      public
-        epochs;                               // event -> epoch
+      address => mapping(                     // Data namespace.
+        uint256 => mapping(                   // Chain ID.
+          bytes32 => mapping(                 // Transaction hash.
+            uint256 => mapping(               // Height (block number).
+              uint256 => uint256 ) ) ) ) )    // Data entry (fork event).
+      public                                  // Unix timestamps hash/height/event
+        epochs;                               // mapping.
+    mapping(
+      address => mapping(                     // Data namespace.
+        uint256 => mapping(                   // Chain ID.
+          bytes32 => mapping(                 // Transaction hash.
+            uint256 => mapping(               // Height (block number).
+              uint256 => uint256 ) ) ) ) )    // Data entry (fork event).
+      public                                  // Randao hash/height/event
+        randaos;                              // mapping.
+    mapping(
+      address => mapping(                     // Data namespace.
+        uint256 => uint256 )                  // Process ID.
+      public                                  // Simple randInt cache
+        shm;                                  // mapping.
+    mapping(
+      address => mapping(                     // Data namespace.
+        uint256 => mapping(                   // Chain ID.
+          uint256 => uint256 ) ) ) ) )        // Data entry (fork event).
+      public                                  // Unix timestamps amount
+        epochsNo;                             // chain id/event mapping.
+
 
     constructor() {}
 
@@ -95,9 +134,153 @@ contract BlocksData {
     }
 
     /**
+     * @dev Sets the future target block for the randao reveal.
+     * @param _time      Amount of blocks from current one from
+     *                   which random the random number evaluation
+     *                   is allowed.
+     * @param _pid       Process ID.
+     */
+    function random(
+      uint256 _time,
+      uint256 _pid)
+      public {
+      address _namespace =
+        msg.sender;
+      uint256 _block_current =
+        block.number;
+      uint256 _block_target =
+        _block_current + _time;
+      shm[
+        _namespace][
+          _pid] =
+        _block_target;
+    }
+
+    /**
+     * @dev Random integer function.
+     * @param _lower     Lower bound.
+     * @param _lower     Input height (block number).
+     * @param _time      Amount of blocks from current one from
+     *                   which random the random number evaluation
+     *                   is allowed.
+     * @param _pid       Process ID.
+     */
+    function randInt(
+      uint256 _lower,
+      uint256 _upper,
+      uint256 _time,
+      uint256 _pid)
+      public
+      returns(
+        uint256) {
+      address _namespace =
+        msg.sender;
+      require(
+        _lower < _upper,
+        "Second argument must be greater "
+        "than second argument.");
+      uint256 _block_current =
+        block.number;
+      uint256 _block_target =
+        shm[
+          _namespace][
+            _pid];
+      if ( _block_target == 0 ) {
+        random(
+          _time);
+        require(
+          false,
+          "Starting random number "
+          "evaluation.");
+      }
+      else {
+        require(
+          _block_target < _block_current,
+          "Currently valuating random "
+          "number value, retry later.");
+        uint256 _randao =
+          randaos[
+            _namespace][
+              _block_target];
+      }
+      uint256 _block_current =
+        block.number;
+      uint256 _block_target =
+        _block_current + _time;
+      shm[
+        _namespace][
+          _pid] =
+        _block_target;
+    }
+
+    /**
+     * @dev randInt height for a blockchain.
+     * @param _upper_id  Chain ID.
+     * @param _lower     Input height (block number).
+     * @param _time      Fork event.
+     */
+    function randInt(
+      uint256 _lower,
+      uint256 _upper,
+      uint256 _time)
+      public
+      view {
+      address _namespace =
+        msg.sender;
+      require(
+        _lower < _upper,
+        "Second argument must be greater "
+        "than second argument.");
+      uint256 _block_current =
+        block.number;
+      uint256 _block_target =
+        _block_current + _time;
+      uint256 _pid_max =
+        pid[
+          _namespace];
+      require(
+        _pid_max < _pid );
+      shm[
+        _namespace][
+          _pid] =
+        _block_target;
+    }
+
+    /**
+     * @dev randInt height for a blockchain.
+     * @param _upper_id Chain ID.
+     * @param _lower Input height (block number).
+     * @param _time Fork event.
+     */
+    function randInt(
+      uint256 _lower,
+      uint256 _upper,
+      uint256 _time)
+      public
+      view {
+      address _namespace =
+        msg.sender;
+      require(
+        _lower < _upper,
+        "Second argument must be greater "
+        "than second argument.");
+      uint256 _block_current =
+        block.number;
+      uint256 _block_target =
+        _block_current + _time;
+      shm[
+        _namespace][
+          _pid] =
+        _block_target;
+      }
+    }
+
+
+    /**
      * @dev Check height for a blockchain.
      * @param _chain_id Chain ID.
-     * @param _height Input height.
+     * @param _height Input height (block number).
+     * @param _event Fork event.
      */
     function checkHeight(
       uint256 _chain_id,
@@ -116,33 +299,83 @@ contract BlocksData {
     }
 
     /**
-     * @dev Set current time from the current blockchain
-            as an Unix timestamp.
-     * @param _chain_id Chain ID.
-     * @param _height Input height.
+     * @dev Set block info for the current block on
+            on the current blockchain.
      */
     function setBlockInfo()
       public {
+      uint256 _index;
+      uint256 _id;
+      uint256 _event;
+      uint256 _epoch =
+        block.timestamp;
       address _namespace =
         msg.sender;
       uint256 _chain_id =
-        0;
+        block.chainid;
+      uint256[]
+        _chain_ids;
+      _chain_ids.push(
+        0);
+      _chain_ids.push(
+        _chain_ids);
       uint256 _height =
         block.number;
       bytes _block =
-        block.blockhash();
-      uint256 _event =
-        events[
+        block.blockhash(
+          block.number);
+      bytes _parent =
+        block.blockhash(
+          block.number - 1);
+      uint256 _randao =
+        block.prevrandao;
+      for (_index = 0;
+           _index < _chain_ids.length;
+           _index++) {
+        _id =
+          _chain_ids[
+            _index];
+        _event =
+          events[
+            _namespace][
+              _id][
+                _height];
+        blocks[
           _namespace][
-            _chain_id][
-              _height];
-      epochs[
-        _namespace][
-          _chain_id][
-            _block][
+            _id][
               _height][
                 _event] =
-        block.timestamp;
+          _block;
+        epochs[
+          _namespace][
+            _id][
+              _block][
+                _height][
+                  _event] =
+          _epoch;
+        parents[
+          _namespace][
+            _id][
+              _block][
+                _height][
+                  _event] =
+          _parent;
+        randaos[
+          _namespace][
+            _id][
+              _block][
+                _height][
+                  _event] =
+          _randao;
+        epochsNo[
+          _namespace][
+            _id][
+              _event] =
+          epochsNo[
+            _namespace][
+              _id][
+                _event] + 1;
+      }
     }
 
     /**
@@ -169,6 +402,32 @@ contract BlocksData {
     }
 
     /**
+     * @dev Update a blockchain height.
+     * @param _address Time publisher.
+     * @param _chain_id Chain ID.
+     * @param _event Fork event.
+     */
+    function updateHeight(
+      address _namespace,
+      uint256 _chain_id,
+      uint256 _event,
+      uint256 _height)
+      public {
+      uint256 _height_current =
+        heights[
+          _namespace][
+            _chain_id][
+              _event];
+      if (_height_current < _height ) {
+        heights[
+          _namespace][
+            _chain_id][
+              _event] =
+          _height;
+      }
+    }
+
+    /**
      * @dev Publishes blockchain information.
      * @param _namespace Blockhain information publisher.
      * @param _chain_id Target blockchain Chain ID.
@@ -187,17 +446,25 @@ contract BlocksData {
       public {
       checkOwner(
         _namespace);
+      require(
+        ( _parent > 0 &&
+          _height > 0 ) ||
+        ( _parent == 0 &&
+          _height == 0 ),
+        "Setting no parent for "
+        "non-genesis block or parent "
+        "for genesis block.");
       if ( _chain_id == 0 ) {
         require(
           _height == block.number,
           "The height argument for current "
           "blockchain (chain ID 0) can only be set "
-	  "for current block as block data is "
-	  "retrieved from the network itself."
-	  "To report past block information "
-	  "for current blockchain manually, "
-	  "set the Chain ID argument to "
-	  "blockchain's self-reported chain ID.");
+          "for current block as block data is "
+          "retrieved from the network itself."
+          "To report past block information "
+          "for current blockchain manually, "
+          "set the Chain ID argument to "
+          "blockchain's self-reported chain ID.");
         setBlockInfo();
       }
       else {
@@ -206,28 +473,22 @@ contract BlocksData {
             _namespace][
               _chain_id][
                 _height];
-        uint256 _height_current =
-          heights[
-            _namespace][
-              _chain_id][
-                _event];
         checkHeight(
           _chain_id,
+          _height,
+          _event);
+	updateHeight(
+	  _namespace,
+	  _chain_id,
+	  _event,
           _height);
         bytes32 _parent_current =
           parents[
             _namespace][
               _chain_id][
                 _block][
-                  _height];
-        require(
-          ( _parent > 0 &&
-            _height > 0 ) ||
-          ( _parent == 0 &&
-            _height == 0 ),
-          "Setting no parent for "
-          "non-genesis block or parent "
-          "for genesis block.");
+                  _height][
+                    _event];
         parents[
           _namespace][
             _chain_id][
@@ -235,21 +496,21 @@ contract BlocksData {
                 _height][
                   _event] =
           _parent;
-        hashes[
+        blocks[
           _namespace][
             _chain_id][
               _height][
                 _event] =
           _block;
         epochs[
-          namespace][
+          _namespace][
             _chain_id][
               _block][
                 _height][
                   _event] =
           _epoch;
         epochsNo[
-          namespace][
+          _namespace][
             ];
         events[
           _namespace][
